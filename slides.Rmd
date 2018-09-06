@@ -1,0 +1,97 @@
+---
+title: "Social mimicry and small networks"
+author: "George G. Vega Yon"
+date: "September 5, 2018"
+output: beamer_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Part 1: Social Mimicry
+
+We are trying to model the following behavior:
+
+A type of behavior which is involuntary
+
+Families were invited to a lab to eat together
+
+Each family member was wearing a aaaa that tracked bites.
+
+A bite consists simply in the action of taking food to your mouth
+
+We are interested in two questions
+
+----
+
+1.  Do we observe social mimicry?
+
+2.  If there is any, can we write down a model of social mimicry?
+
+----
+
+* For the first question, right now we are using a permutation test.
+
+* But first, let's take a look a the structure of the data
+
+A DIAGRAM GOES HERE
+
+## Formal description
+
+Mathematically, we can describe the data as follows:
+
+* For each individual $i$ we observe a vector $T_i \equiv\{t^i_1, t^i_2,\dots\}$ with $i$'s bites timestamps. You can think of this as a poisson process.
+
+* Let $n_i$ denote the size of $T_i$.
+
+* Also, define the function $R:T_i\times T_j\mapsto T_j$ as that which returns the left most close bite of $j$ to $i$, i.e. the inmediate bite of $j$ before $i$ took a particular bite:
+
+$$
+R(t_i^n, T_j) = \left\{\begin{array}{l}
+\mbox{Undefined},\quad\mbox{if }(\forall t_j^n\in T_j) \exists t_i^m\in T_i \mbox{ s.th. }t_i^m\in(t_j^n,t_i^n) \\
+\arg\max_{\{t_j^n:t_j^n\in T_j, t_j^n \leq t_i^n\}}t_i^n - t_j^n,\quad\mbox{otherwise.}
+\end{array}\right.
+$$
+
+* A possible statistic is to take the average time gap between i and j's bite, formally
+
+$$
+S_{ij} = \sum_{i} 
+$$
+
+----
+
+* At the dyadic level, we observe two vectors of timestamps (when the bites occurred per individual)
+
+* 
+
+
+
+## Part 2: Small Network
+
+* Observe small teams perfoming several tasks in a lab,
+
+* Team members are surveyed before and after each task.
+
+* From their responses, collective intelligence indicators were built.
+
+* Also, they were asked about their perceptions of the social networks: leadership,
+  advice, etc. Call this social cognition.
+  
+We are interested in the following question
+
+----
+
+* How important is, if important at all, social cognition in group performance?
+
+* **Our problem**: Teams studied here (and everywhere) are usually very small, 
+raging 4 to 5 members.
+
+* Our current approach: We defined an statistic that measures some sort of correlation:
+
+$$
+S_T\equiv\frac{2}{n(n-1)}\sum_{\{(i, j):(i,j)\in T, i<j\}}H(i,j)^2
+$$
+
+Where $H(i,j)$ is the hamming distance between $i$ and $j$'s perceived social structures.
