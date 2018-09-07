@@ -6,7 +6,8 @@ output: beamer_presentation
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = FALSE, out.width=".8\\linewidth", fig.width=6,
+                      fig.align = "center")
 ```
 
 ## Part 1: Social Mimicry
@@ -45,7 +46,7 @@ Mathematically, we can describe the data as follows:
 
 * Let $n_i$ denote the size of $T_i$.
 
-* Also, define the function $R:T_i\times T_j\mapsto T_j$ as that which returns the left most close bite of $j$ to $i$, i.e. the inmediate bite of $j$ before $i$ took a particular bite:
+* Also, define the function $R:T_i\times T_j\mapsto T_j$ as that which returns the **leftmost close** bite of $j$ to $i$, i.e. the inmediate bite of $j$ before $i$ took a particular bite:
 
 $$
 R(t_i^n, T_j) = \left\{\begin{array}{l}
@@ -53,19 +54,67 @@ R(t_i^n, T_j) = \left\{\begin{array}{l}
 \arg\max_{\{t_j^n:t_j^n\in T_j, t_j^n \leq t_i^n\}}t_i^n - t_j^n,\quad\mbox{otherwise.}
 \end{array}\right.
 $$
+  
+  For now we will focus on the cases where this is defined.
 
-* A possible statistic is to take the average time gap between i and j's bite, formally
+---
+
+* A possible statistic is to take the average time gap between $i$ and $j$'s
+  bite, formally, assuming $R(t, T_j)$ is defined for all $t\in T_i$, we have
+
 
 $$
-S_{ij} = \sum_{i} 
+S_{ij} = \frac{1}{n_i}\sum_{t\in T_i}(t - R(t, T_j))
 $$
 
-----
+## Data
 
-* At the dyadic level, we observe two vectors of timestamps (when the bites occurred per individual)
+*   At the dyadic level, we observe two vectors of timestamps (when the bites
+    occurred per individual), e.g.
+    
+    ```{r example-of-dyad, echo=FALSE, cache=TRUE, fig.align='center', fig.cap="Simulated dyad", fig.height=4}
+    set.seed(21)
+    plot(biteme::simulate_dyad(rates = c(.8, .5)), lwd=10)
+    ```
+    
+*   For the previous example, $T_1 = \{t_1^1, t_1^2, t_1^3, t_1^4, t_1^5, t_1^6\}$,
+    and $T_2 = \{t_2^1, t_2^2, t_2^3\}$
+    
+    $$R(t_2^2, T_1) = t_1^3$$
 
-* 
+## Permuting time intervals
 
+*   Imagine we observe the followin: $T_{a} = \{0, 1, 3, 6\}$, then we have 
+    $3! = 6$ total permutations as what is swapped are time intervals.
+    
+    ```{r example-permutations, echo=FALSE, fig.height=4, cache=TRUE, fig.cap="Distribution of permuted set (50,000 permutations)."}
+    library(biteme)
+    # Function to encode the shuffle
+    shuffle_wrap <- function(dat) {
+      paste0(shuffle_bites(dat)$times[,1], collapse="")
+    }
+    
+    # Fake data. This has only 6 possible permutations
+    dat <- cbind(
+      time = c(0, 1, 3, 6),
+      ids  = rep(1, 4)
+    )
+    
+    # Tabulating and plotting the permutations
+    n <- 5e4
+    set.seed(111224)
+    ans <- replicate(n, shuffle_wrap(dat))
+    ans <- table(ans)/n
+    
+    # ans
+    # ans
+    #    0136    0146    0236    0256    0346    0356
+    # 0.16842 0.16622 0.16618 0.16794 0.16566 0.16558
+    
+    # Plotting the distribution
+    barplot(ans)
+    ```
+        
 
 
 ## Part 2: Small Network
