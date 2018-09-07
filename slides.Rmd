@@ -132,15 +132,17 @@ We are interested in the following question
 
 ----
 
-* How important is, if important at all, social cognition in group performance?
+*   How important is, if important at all, social cognition in group performance?
 
-* **Our problem**: Teams studied here (and everywhere) are usually very small, 
+*   **Our problem**: Teams studied here (and everywhere) are usually very small, 
 raging 4 to 5 members.
 
-* Our current approach: We defined an statistic that measures some sort of correlation:
+*   Our current approach: We defined an statistic that measures some sort of correlation:
+    
+    $$
+    S_T\equiv 1-\frac{1}{n(n-1)}\sum_{\{(i, j):(i,j)\in T, i<j\}}H(i,j)
+    $$
+    
+    Where $H(i,j)$ is the hamming distance between $i$ and $j$'s perceived social structures.
 
-$$
-S_T\equiv\frac{2}{n(n-1)}\sum_{\{(i, j):(i,j)\in T, i<j\}}H(i,j)^2
-$$
-
-Where $H(i,j)$ is the hamming distance between $i$ and $j$'s perceived social structures.
+*   $S_T\in[0,1]$, where 1 means _perfect correlation_ (all subjects have the exact same perception of the graph.)
