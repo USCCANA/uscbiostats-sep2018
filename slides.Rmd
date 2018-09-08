@@ -82,7 +82,7 @@ Myth: _"SAS is required for drug tests by the FDA"_
 
 ![](fig/wrong.gif){style="width:800px;"}
 
-## Ranting about R vs SAS
+## Ranting about R vs SAS 
 
 Myth: _"SAS is required for drug tests by the FDA"_
 
