@@ -2,12 +2,18 @@
 title: "Social mimicry and small networks"
 author: "George G. Vega Yon"
 date: "September 5, 2018"
-output: beamer_presentation
+output:
+  revealjs::revealjs_presentation:
+    self_contained: true
+    transition: fade
+    theme: simple
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, out.width=".8\\linewidth", fig.width=6,
-                      fig.align = "center")
+knitr::opts_chunk$set(
+  echo = FALSE, out.width=".8\\linewidth", fig.width=6,
+  fig.align = "center"
+  )
 ```
 
 ## Part 1: Social Mimicry
@@ -24,13 +30,129 @@ A bite consists simply in the action of taking food to your mouth
 
 We are interested in two questions
 
-----
+## Today's Talk
 
-1.  Do we observe social mimicry?
+1.  Social Mimicry
+    
+    *   Can we identify it?
+    
+    *   If there is any, how can we model it?
+    
+2.  Small network (statistics)
 
-2.  If there is any, can we write down a model of social mimicry?
+\pause
 
-----
+But first, a detour!
+
+## Ranting about R vs SAS
+
+We will look at the following myths:
+
+1.  _"SAS is easier than R"_
+
+2.  _"SAS is required for drug tests by the FDA"_
+
+3.  _"R is cool... but it can't handle data out-of-memory like SAS"_
+
+4.  
+
+## Ranting about R vs SAS
+
+Myth: _"SAS is easier than R"_
+
+Reallity: Take a look at this simple task of importing a CSV file with a header
+
+\tiny
+
+```r
+dataset <- read.csv("mydata.csv")
+```
+
+```sas
+PROC IMPORT DATAFILE = "mydata.csv" GETNAMES = yes OUT = dataset REPLACE;
+  getmames = yes;
+run;
+```
+
+\normalsize
+
+You be the judge...
+
+
+## Ranting about R vs SAS
+
+Myth: _"SAS is required for drug tests by the FDA"_
+
+Reallity:
+
+> FDA does not require use of any specific software for statistical analyses, and statistical software
+is not explicitly discussed in Title 21 of the Code of Federal Regulations [e.g., in 21CFR part
+11]. However, the software package(s) used for statistical analyses should be fully documented
+in the submission, including version and build identification.
+--- [FDA, May 6, 2015](https://www.fda.gov/downloads/forindustry/datastandards/studydatastandards/ucm587506.pdf)
+
+
+---
+
+![](fig/open-fda.png){style="width:75%;"}
+
+
+## Ranting about R vs SAS
+
+Myth: _"R is cool... but it can't handle data out-of-memory like SAS"_
+
+---
+
+![](fig/wrong.gif){style="width:800px;"}
+
+## Ranting about R vs SAS
+
+Myth: _"R is cool... but it can't handle data out-of-memory like SAS"_
+
+Reallity: Just take a look at the [CRAN Task View for High Performance and Parallel Computing in R](https://cran.r-project.org/web/views/HighPerformanceComputing.html)
+
+[biglm](https://cran.r-project.org/package=biglm),
+[ff](https://cran.r-project.org/package=ff),
+[bigmemory](https://cran.r-project.org/package=bigmemory),
+[HadoopStreaming](https://cran.r-project.org/package=HadoopStreaming),
+[speedglm](https://cran.r-project.org/package=speedglm),
+[biglars](https://cran.r-project.org/package=biglars),
+[MonetDB.R](https://cran.r-project.org/package=MonetDB.R),
+[ffbase](https://cran.r-project.org/package=ffbase),
+[LaF](https://cran.r-project.org/package=LaF),
+[bigstatsr](https://cran.r-project.org/package=bigstatsr)
+
+## Ranting about R vs SAS
+
+Myth: _"The job market"_
+
+Reallity: NO
+
+![](fig/top-analytics-data-science-machine-learning-software-2018-3yrs-539.jpg){style="width:50%;"}
+
+Source: [KDnuggets](https://www.kdnuggets.com/2018/05/poll-tools-analytics-data-science-machine-learning-results.html)
+
+---
+
+![](fig/by_industry_graph-1-675x675.png){style="width:50%;"}
+
+Source: [Stackoverflow](https://stackoverflow.blog/2017/10/10/impressive-growth-r/)
+
+---
+
+As pointed out by [David Smith](https://ropensci.org/blog/2017/10/13/rprofile-david-smith/){target="_blank"} on ["Job trends for R and Python"](http://blog.revolutionanalytics.com/2017/02/job-trends-for-r-and-python.html){target="_blank"}
+
+![](fig/indeed-r-python-sas.png)
+
+Source: [indeed.com's Job trends](https://www.indeed.com/jobtrends/q-R-statistics-q-SAS-statistics-q-python-statistics.html){target="_blank"}
+
+---
+
+![](fig/data-science-r-python-sas.png)
+
+Source: [indeed.com's Job trends](https://www.indeed.com/jobtrends/q-R-statistics-q-SAS-statistics-q-python-statistics.html){target="_blank"}
+
+---
 
 * For the first question, right now we are using a permutation test.
 
@@ -73,7 +195,7 @@ $$
     occurred per individual), e.g.
     
     ```{r example-of-dyad, echo=FALSE, cache=TRUE, fig.align='center', fig.cap="Simulated dyad", fig.height=4}
-    set.seed(21)
+    set.seed(21) 
     plot(biteme::simulate_dyad(rates = c(.8, .5)), lwd=10)
     ```
     
@@ -91,7 +213,7 @@ $$
     library(biteme)
     # Function to encode the shuffle
     shuffle_wrap <- function(dat) {
-      paste0(shuffle_bites(dat)$times[,1], collapse="")
+      paste0(shuffle_bites(dat)[,1], collapse="")
     }
     
     # Fake data. This has only 6 possible permutations
