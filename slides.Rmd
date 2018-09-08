@@ -7,6 +7,13 @@ output:
     self_contained: true
     transition: fade
     theme: simple
+    reveal_options:
+      controls: false
+      slideNumber: true
+      margin: 0.05
+      width: 1024
+      height: 780
+    css: "slides.css"
 ---
 
 ```{r setup, include=FALSE}
@@ -16,19 +23,6 @@ knitr::opts_chunk$set(
   )
 ```
 
-## Part 1: Social Mimicry
-
-We are trying to model the following behavior:
-
-A type of behavior which is involuntary
-
-Families were invited to a lab to eat together
-
-Each family member was wearing a aaaa that tracked bites.
-
-A bite consists simply in the action of taking food to your mouth
-
-We are interested in two questions
 
 ## Today's Talk
 
@@ -54,7 +48,7 @@ We will look at the following myths:
 
 3.  _"R is cool... but it can't handle data out-of-memory like SAS"_
 
-4.  
+4.  _"SAS has a higher demand than R in the job market"_
 
 ## Ranting about R vs SAS
 
@@ -83,9 +77,18 @@ You be the judge...
 
 Myth: _"SAS is required for drug tests by the FDA"_
 
+
+---
+
+![](fig/wrong.gif){style="width:800px;"}
+
+## Ranting about R vs SAS
+
+Myth: _"SAS is required for drug tests by the FDA"_
+
 Reallity:
 
-> FDA does not require use of any specific software for statistical analyses, and statistical software
+> FDA <span style="font-size:50px;font-weight:bold;">does not require use of any specific software for statistical analyses</span>, and statistical software
 is not explicitly discussed in Title 21 of the Code of Federal Regulations [e.g., in 21CFR part
 11]. However, the software package(s) used for statistical analyses should be fully documented
 in the submission, including version and build identification.
@@ -94,7 +97,7 @@ in the submission, including version and build identification.
 
 ---
 
-![](fig/open-fda.png){style="width:75%;"}
+![](fig/open-fda.png){style="width:75%"}
 
 
 ## Ranting about R vs SAS
@@ -103,7 +106,7 @@ Myth: _"R is cool... but it can't handle data out-of-memory like SAS"_
 
 ---
 
-![](fig/wrong.gif){style="width:800px;"}
+![](fig/you-sure.gif){style="width:75%;"}
 
 ## Ranting about R vs SAS
 
@@ -124,9 +127,9 @@ Reallity: Just take a look at the [CRAN Task View for High Performance and Paral
 
 ## Ranting about R vs SAS
 
-Myth: _"The job market"_
+Myth: _"SAS has a higher demand than R in the job market"_
 
-Reallity: NO
+---
 
 ![](fig/top-analytics-data-science-machine-learning-software-2018-3yrs-539.jpg){style="width:50%;"}
 
@@ -142,25 +145,38 @@ Source: [Stackoverflow](https://stackoverflow.blog/2017/10/10/impressive-growth-
 
 As pointed out by [David Smith](https://ropensci.org/blog/2017/10/13/rprofile-david-smith/){target="_blank"} on ["Job trends for R and Python"](http://blog.revolutionanalytics.com/2017/02/job-trends-for-r-and-python.html){target="_blank"}
 
-![](fig/indeed-r-python-sas.png)
+![](fig/indeed-r-python-sas.png){class="img-std"}
 
 Source: [indeed.com's Job trends](https://www.indeed.com/jobtrends/q-R-statistics-q-SAS-statistics-q-python-statistics.html){target="_blank"}
 
 ---
 
-![](fig/data-science-r-python-sas.png)
+![](fig/data-science-r-python-sas.png){class="img-std"}
 
 Source: [indeed.com's Job trends](https://www.indeed.com/jobtrends/q-R-statistics-q-SAS-statistics-q-python-statistics.html){target="_blank"}
 
+## Social Mimicry
+
+-   Families were invited to a lab to eat together
+
+-   Each family member was wearing a aaaa that tracked bites.
+
+-   At the individual level, we recorded the moment at which she/he took a bite
+    (fork/spoon to mouth).
+
 ---
 
-* For the first question, right now we are using a permutation test.
+```{r example-of-dyad, echo=FALSE, cache=FALSE, fig.align='center', fig.cap="Simulated dyad", fig.height=4, out.width = "600px"}
+set.seed(21) 
+plot(biteme::simulate_dyad(rates = c(.8, .5)), lwd=10)
+```
+    
+So we have, $T_1 = \{t_1^1, t_1^2, t_1^3, t_1^4, t_1^5, t_1^6\}$, and
+$T_2 = \{t_2^1, t_2^2, t_2^3\}$
+    
+    $$R(t_2^2, T_1) = t_1^3$$
 
-* But first, let's take a look a the structure of the data
-
-A DIAGRAM GOES HERE
-
-## Formal description
+---
 
 Mathematically, we can describe the data as follows:
 
@@ -189,20 +205,7 @@ $$
 S_{ij} = \frac{1}{n_i}\sum_{t\in T_i}(t - R(t, T_j))
 $$
 
-## Data
 
-*   At the dyadic level, we observe two vectors of timestamps (when the bites
-    occurred per individual), e.g.
-    
-    ```{r example-of-dyad, echo=FALSE, cache=TRUE, fig.align='center', fig.cap="Simulated dyad", fig.height=4}
-    set.seed(21) 
-    plot(biteme::simulate_dyad(rates = c(.8, .5)), lwd=10)
-    ```
-    
-*   For the previous example, $T_1 = \{t_1^1, t_1^2, t_1^3, t_1^4, t_1^5, t_1^6\}$,
-    and $T_2 = \{t_2^1, t_2^2, t_2^3\}$
-    
-    $$R(t_2^2, T_1) = t_1^3$$
 
 ## Permuting time intervals
 
