@@ -155,6 +155,16 @@ Source: [indeed.com's Job trends](https://www.indeed.com/jobtrends/q-R-statistic
 
 Source: [indeed.com's Job trends](https://www.indeed.com/jobtrends/q-R-statistics-q-SAS-statistics-q-python-statistics.html){target="_blank"}
 
+## Ranting about R vs SAS
+
+1.  _"SAS is uglier~~easier~~ than R"_
+
+2.  _"SAS is **NOT** required for drug tests by the FDA"_
+
+3.  _"R **is cool** ~~... but it can't~~ **AND CAN** handle data out-of-memory like SAS"_
+
+4.  _"SAS ~~has a higher demand than R in~~ **IS LEAVING** the job market"_
+
 ## Social Mimicry
 
 -   Families were invited to a lab to eat together
@@ -174,7 +184,7 @@ plot(biteme::simulate_dyad(rates = c(.8, .5)), lwd=10)
 So we have, $T_1 = \{t_1^1, t_1^2, t_1^3, t_1^4, t_1^5, t_1^6\}$, and
 $T_2 = \{t_2^1, t_2^2, t_2^3\}$
     
-    $$R(t_2^2, T_1) = t_1^3$$
+$$R(t_2^2, T_1) = t_1^3$$|
 
 ---
 
@@ -262,6 +272,8 @@ We are interested in the following question
 *   **Our problem**: Teams studied here (and everywhere) are usually very small, 
 raging 4 to 5 members.
 
+---
+
 *   Our current approach: We defined an statistic that measures some sort of correlation:
     
     $$
@@ -271,3 +283,67 @@ raging 4 to 5 members.
     Where $H(i,j)$ is the hamming distance between $i$ and $j$'s perceived social structures.
 
 *   $S_T\in[0,1]$, where 1 means _perfect correlation_ (all subjects have the exact same perception of the graph.)
+
+---
+
+```{r net-sims}
+library(magrittr)
+
+set.seed(1)
+worst <- list(
+  matrix(rep(0,16), ncol=4),
+  matrix(rep(1,16), ncol=4) %>% `diag<-`(0),
+  matrix(rep(0,16), ncol=4),
+  matrix(rep(1,16), ncol=4) %>% `diag<-`(0)
+)
+
+best <- runif(16) %>%
+  `>`(.6) %>%
+  as.integer %>%
+  matrix(ncol=4) %>%
+  list %>% rep(4)
+```
+
+```{r computing}
+source("netcor-test.R")
+statistic(best)
+statistic(worst)
+```
+
+```{r experiments}
+sizes <- c(3, 5, 10)
+nsims <- 50
+prob  <- c(.1, .5, 1)
+
+# Function to compute simulations
+simgraph <- function(n, p) {
+  
+  # Baseline graph
+  x <- (runif(n*n) > .5) %>% as.integer %>%
+    matrix(ncol=n)
+  
+  # Generating networks and computing statistics
+  ans<-replicate(n, netdiffuseR::rewire_graph(x, p, both.ends = TRUE))  %>%
+    statistic()
+  ans$score
+}
+
+combinations <- expand.grid(n = sizes, p = prob)
+
+set.seed(2123)
+library(magrittr)
+ans <- parallel::mcmapply(function(n, p) {
+  data.frame(
+    size = n,
+    prob = p,
+    stat = replicate(nsims, tryCatch(simgraph(n, p), error=function(e) e))
+  )
+  }, n = combinations$n, p=combinations$p, mc.cores=4L, SIMPLIFY = FALSE)
+
+```
+
+
+
+
+
+
