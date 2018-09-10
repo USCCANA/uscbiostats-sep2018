@@ -340,6 +340,8 @@ ans <- parallel::mcmapply(function(n, p) {
   )
   }, n = combinations$n, p=combinations$p, mc.cores=4L, SIMPLIFY = FALSE)
 
+boxplot(stat ~ prob*size, data=do.call(rbind, ans))
+
 ```
 
 
