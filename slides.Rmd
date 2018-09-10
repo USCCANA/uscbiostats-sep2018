@@ -304,15 +304,15 @@ best <- runif(16) %>%
   list %>% rep(4)
 ```
 
-```{r computing}
+```{r computing, eval=FALSE}
 source("netcor-test.R")
 statistic(best)
 statistic(worst)
 ```
 
-```{r experiments}
-sizes <- c(3, 5, 10)
-nsims <- 50
+```{r experiments, cache=TRUE}
+sizes <- c(3, 4, 5)
+nsims <- 500
 prob  <- c(.1, .5, 1)
 
 # Function to compute simulations
@@ -338,12 +338,33 @@ ans <- parallel::mcmapply(function(n, p) {
     prob = p,
     stat = replicate(nsims, tryCatch(simgraph(n, p), error=function(e) e))
   )
-  }, n = combinations$n, p=combinations$p, mc.cores=4L, SIMPLIFY = FALSE)
+  }, n = combinations$n, p=combinations$p, mc.cores=4L, SIMPLIFY = FALSE,
+  mc.set.seed = TRUE
+  )
+```
 
-boxplot(stat ~ prob*size, data=do.call(rbind, ans))
+```{r plot-experiments, out.width="600px"}
+ans <- do.call(rbind, ans)
+ans$size <- paste("Size:", ans$size)
+ans$prob <- paste("Pr():", ans$prob)
+boxplot(
+  stat ~ size*prob, data=ans, sep="\n", las=2
+  )
 
 ```
 
+
+---
+
+```{r plot-experiments2, out.width="600px"}
+ans$n <- as.integer(gsub(".+\\s+", "", ans$size))
+
+mod <- lm(stat ~0+ n + I(n^2) + I(n^3), data = ans)
+ans$stat_adj <- ans$stat - predict(mod, type = "response")
+boxplot(
+  stat_adj ~ size*prob, data=ans, sep="\n", las=2
+  )
+```
 
 
 

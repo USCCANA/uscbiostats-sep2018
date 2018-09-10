@@ -32,7 +32,7 @@ statistic <- function(...) {
         next
       
       # The hamming distance
-      v <- c(v, n*(n-1) - sum(l[[i]] == l[[j]], na.rm = TRUE))
+      v <- c(v, sum(l[[i]] == l[[j]], na.rm = TRUE))
     }
   
   # Computing scores and returning
